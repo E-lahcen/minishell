@@ -6,7 +6,7 @@
 /*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/31 19:06:10 by zwina             #+#    #+#             */
-/*   Updated: 2022/06/09 15:04:51 by zwina            ###   ########.fr       */
+/*   Updated: 2022/06/12 13:12:54 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@ t_list	**parser_word(char *line)
 	{
 		if (line[i] == ' ')
 			i++;
-		else if (line[i] == '|' || line[i] == '&')
-			i = get_symbol(line, i, &(words[1]));
 		else if (line[i] == '>' || line[i] == '<')
 			i = get_redirection(line, i, &(words[1]));
 		else
@@ -40,10 +38,7 @@ t_list	**parser_word(char *line)
 size_t	get_redirection(char *line, size_t start, t_list **reds)
 {
 	size_t	i;
-	char	q_d[2];
 
-	q_d[0] = 0;
-	q_d[1] = 0;
 	i = start;
 	if (line[i] == '>')
 	{
@@ -60,8 +55,8 @@ size_t	get_redirection(char *line, size_t start, t_list **reds)
 	ft_lstadd_back(reds, ft_lstnew(ft_substr(line, start, i - start), 0));
 	while (line[i] == ' ')
 		i++;
-	if (line[i] != '\0' && line[i] != ' ' && line[i] != '|' && \
-		line[i] != '&' && line[i] != '<' && line[i] != '>')
+	if (line[i] != '\0' && line[i] != ' ' && \
+		line[i] != '<' && line[i] != '>')
 		i = get_arg(line, i, reds);
 	return (i);
 }
@@ -75,7 +70,6 @@ size_t	get_arg(char *line, size_t start, t_list **args)
 	q_d[1] = 0;
 	i = start;
 	while (line[i] != '\0' && line[i] != ' ' && \
-			line[i] != '|' && line[i] != '&' && \
 			line[i] != '<' && line[i] != '>')
 		i = set_q_d(line, i, q_d);
 	ft_lstadd_back(args, \

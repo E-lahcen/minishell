@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/22 12:11:27 by zwina             #+#    #+#             */
-/*   Updated: 2022/06/09 15:04:44 by zwina            ###   ########.fr       */
+/*   Updated: 2022/06/15 13:20:11 by lelhlami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,20 @@ int	main(int ac, char **av, char **env)
 
 	(void)av;
 	if (ac != 1)
-		return (0);
+	{
+		errors(NULL, "Arguments are not supported.", 0);
+		return (1);
+	}
+	sighandler();
 	while (1)
 	{
 		line = readline("\e[38;5;118mminishell$\e[0m ");
-		if (line == NULL)
-			continue ;
+		if (!line)
+			ctrl_d_func();
 		if (line[0])
 			add_history(line);
 		listline = parser(line, env);
-		print_listline(listline);
+		print_listline(listline, 0);
 		executor(listline);
 	}
 	return (0);

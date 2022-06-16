@@ -1,6 +1,20 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2022/06/10 12:37:52 by zwina             #+#    #+#              #
+#    Updated: 2022/06/15 12:33:28 by lelhlami         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 DEBUG		:= -fsanitize=address -g
 CCWI		:= gcc -Wall -Wextra -Werror -Iincludes
-EXFGS		:= -lreadline
+BREWFGI		:= -I ~/Downloads/homebrew/opt/readline/include
+BREWFGL		:= -L ~/Downloads/homebrew/opt/readline/lib
+EXFGS		:= -lreadline $(BREWFGL)
 NAME		:= minishell
 # directories
 SRCSDIR		:= srcs
@@ -10,7 +24,7 @@ PARSDIR		:= parsing
 PARCMDDIR	:= parser_cmdline
 PARPIPDIR	:= parser_pipeline
 PARLISDIR	:= parser_listline
-# libft
+# libf
 LIBFTDIR	:= ./libs/Libft
 LIBFT		:= $(LIBFTDIR)/libft.a
 # sources
@@ -31,11 +45,14 @@ CPARPIP		:=			parser_pipeline.c
 CPARLIS		:=			parser_listline.c \
 						free_listline.c
 CPARS		:=		parser.c \
-					error_parsing.c \
+					error_pre_parsing.c \
+					error_parenthesis.c \
+					error_unexpected.c \
 					$(foreach F,$(CPARCMD),$(PARCMDDIR)/$(F)) \
 					$(foreach F,$(CPARPIP),$(PARPIPDIR)/$(F)) \
 					$(foreach F,$(CPARLIS),$(PARLISDIR)/$(F))
 CFILES		:=	minishell.c \
+				signals.c \
 				PRINTING.c \
 				errors.c \
 				$(foreach F,$(CEXEC),$(EXECDIR)/$(F)) \
@@ -53,7 +70,7 @@ $(NAME) : $(LIBFT) $(OBJSDIR) $(OBJS)
 	$(CCWI) $(EXFGS) $(OBJS) $(LIBFT) -o $(NAME)
 
 $(OBJS) : $(OBJSDIR)/%.o : $(SRCSDIR)/%.c
-	$(CCWI) -c $< -o $@
+	$(CCWI) -c $< -o $@ $(BREWFGI)
 
 $(OBJSDIR) :
 	@mkdir $(OBJSDIR)

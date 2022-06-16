@@ -6,7 +6,7 @@
 /*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/07 16:44:35 by zwina             #+#    #+#             */
-/*   Updated: 2022/06/05 17:16:23 by zwina            ###   ########.fr       */
+/*   Updated: 2022/06/12 13:38:46 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ typedef struct s_list
 	struct s_list	*next;
 }				t_list;
 
-t_list	*ft_lstnew(void *content, char stat);
+t_list	*ft_lstnew(void *content, unsigned short stat);
 void	ft_lstadd_front(t_list **lst, t_list *new);
 int		ft_lstsize(t_list *lst);
 t_list	*ft_lstlast(t_list *lst);

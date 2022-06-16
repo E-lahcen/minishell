@@ -6,13 +6,13 @@
 /*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/08 11:38:17 by zwina             #+#    #+#             */
-/*   Updated: 2022/06/05 17:16:10 by zwina            ###   ########.fr       */
+/*   Updated: 2022/06/12 13:39:08 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-t_list	*ft_lstnew(void *content, char stat)
+t_list	*ft_lstnew(void *content, unsigned short stat)
 {
 	t_list	*new_element;
 

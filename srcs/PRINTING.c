@@ -6,93 +6,97 @@
 /*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 15:06:17 by zwina             #+#    #+#             */
-/*   Updated: 2022/06/09 11:51:32 by zwina            ###   ########.fr       */
+/*   Updated: 2022/06/14 08:12:56 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-void	print_listline(t_listline *listline)
+void	print_listline(t_listline *listline, size_t tabs)
 {
 	t_list	*lst;
 
 	if (!listline)
 	{
+		print_tabs(tabs);
 		printf("listline : (NULL)\n");
 		return ;
 	}
+	print_tabs(tabs);
 	printf("listline : n = %d.\n", listline->n);
 	lst = listline->pipelines;
 	while (lst)
 	{
-		print_pipeline(lst->content);
+		if (lst->stat == PIPELINE)
+			print_pipeline(lst->content, tabs + 1);
+		else if (lst->stat == LISTLINE)
+			print_listline(lst->content, tabs + 1);
 		lst = lst->next;
 	}
 }
 
-void	print_pipeline(t_pipeline *pipeline)
+void	print_pipeline(t_pipeline *pipeline, size_t tabs)
 {
 	t_list	*lst;
 
 	if (!pipeline)
 	{
+		print_tabs(tabs);
 		printf("pipeline : (NULL)\n");
 		return ;
 	}
-	printf("\tpipeline : n = %d, ", pipeline->n);
-	if (pipeline->pipestat == POR)
-		printf("pipestat = POR.\n");
-	else if (pipeline->pipestat == PAND)
-		printf("pipestat = PAND.\n");
-	else
-		printf("pipestat = 0.\n");
+	print_tabs(tabs);
+	printf("pipeline : n = %d.\n", pipeline->n);
 	lst = pipeline->cmdlines;
 	while (lst)
 	{
-		print_cmdline(lst->content);
+		if (lst->stat == CMDLINE)
+			print_cmdline(lst->content, tabs + 1);
+		else if (lst->stat == LISTLINE)
+			print_listline(lst->content, tabs + 1);
 		lst = lst->next;
 	}
 }
 
-void	print_cmdline(t_cmdline *cmdline)
+void	print_cmdline(t_cmdline *cmdline, size_t tabs)
 {
 	size_t	i;
 
 	if (!cmdline)
 	{
-		printf("\t\t--------------------------------\n");
-		printf("\t\t(NULL)\n");
-		printf("\t\t--------------------------------\n");
+		print_tabs(tabs);
+		printf("cmdline : (NULL)\n");
 		return ;
 	}
-	printf("\t\t--------------------------------\n");
-	if (cmdline->cmd_args)
+	print_tabs(tabs);
+	printf("cmdline :\n");
+	print_tabs(tabs + 1);
+	printf("cmd_path : |%s|\n", cmdline->cmd_path);
+	print_tabs(tabs + 1);
+	printf("cmd_args :\n");
+	i = 0;
+	while (cmdline->cmd_args[i])
 	{
-		printf("\t\tcommand args :\n");
-		i = 0;
-		while (cmdline->cmd_args[i])
-			printf("\t\t\t|%s|\n", cmdline->cmd_args[i++]);
+		print_tabs(tabs + 2);
+		printf("|%s|\n", cmdline->cmd_args[i]);
+		i++;
 	}
-	else
-		printf("\t\tcommand args : (NULL)\n");
-	if (cmdline->cmd_path)
-		printf("\t\tcommand path : |%s|\n", cmdline->cmd_path);
-	else
-		printf("\t\tcommand path : (NULL)\n");
-	printf("\t\toutput : %d\n", cmdline->output);
-	printf("\t\tappend : %d\n", cmdline->append);
-	printf("\t\tinput : %d\n", cmdline->input);
-	printf("\t\theredoc : %d\n", cmdline->heredoc);
-	printf("\t\t--------------------------------\n");
+	print_tabs(tabs + 1);
+	printf("cmd_reds :\n");
+	print_list(cmdline->words[1], tabs + 2);
 }
 
-void	print_list(t_list *words)
+void	print_list(t_list *words, size_t tabs)
 {
 	if (!words)
-		printf("\t\t\t\t(the list is NULL)\n");
+	{
+		print_tabs(tabs);
+		printf("(the list is NULL)\n");
+	}
 	while (words)
 	{
-		printf("\t\t\t\t|%s|", words->content);
+		print_tabs(tabs);
+		printf("|%s|", words->content);
 		if (words->stat & DR)
 			printf(" (D)");
 		if (words->stat & SQU)
@@ -136,4 +140,10 @@ void	print_list(t_list *words)
 		printf("\n");
 		words = words->next;
 	}
+}
+
+void	print_tabs(size_t tabs)
+{
+	while (tabs--)
+		printf("\t");
 }

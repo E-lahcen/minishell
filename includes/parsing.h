@@ -6,7 +6,7 @@
 /*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/30 11:37:49 by zwina             #+#    #+#             */
-/*   Updated: 2022/06/09 15:29:53 by zwina            ###   ########.fr       */
+/*   Updated: 2022/06/14 07:46:38 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@
 # define ERR_AMBG "ambiguous redirect"
 # define ERR_UNEX "syntax error near unexpected token"
 # define ERR_INCP "incomplete symbol"
-# define ERR_PARTH "incomplete parenthesis"
+# define ERR_PARTH_C "unclosed parenthesis"
+# define ERR_PARTH_E "empty parenthesis"
+# define ERR_PARTH_S "syntax error parenthesis"
 
 // Stats
 # define QU (unsigned short)96
@@ -43,6 +45,11 @@
 # define S_APPEND (unsigned short)512
 # define S_OUTPUT (unsigned short)256
 
+// Stract nodes
+# define LISTLINE (unsigned short)4
+# define PIPELINE (unsigned short)2
+# define CMDLINE (unsigned short)1
+
 // Dollar nodes
 # define F_NODE (char)2
 # define L_NODE (char)1
@@ -61,7 +68,6 @@ typedef struct s_listline
 typedef struct s_pipeline
 {
 	t_list	*cmdlines;
-	char	pipestat;
 	int		n;
 }			t_pipeline;
 
@@ -81,19 +87,31 @@ typedef struct s_cmdline
 // ----------------------------------------------------------------------------
 // parser.c
 t_listline	*parser(char *line, char **env);
-void		set_pipestats(t_listline *listline);
-char		get_pipestat(t_pipeline *pipeline);
+size_t		skip_parenthesis(char *line, size_t i);
+size_t		skip_quotes(char *line, size_t i);
 // error_parsing.c
 int			error_quotes(char *line);
 int			error_parenthesis(char *line);
 int			error_incomplete(char *line);
-int			error_unexpected(t_listline *listline, char *line);
-int			error_unexpected_loop(t_listline *listline);
+int			error_unexpected_listline(t_listline *listline);
+int			error_unexpected_pipeline(t_pipeline *pipeline);
+int			error_unexpected_cmdline(t_cmdline *cmdline);
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 // parser_listline.c
 t_listline	*parser_listline(char *line, char **env);
 size_t		listline_loop(char *line, size_t i, t_list **pipeline, char **env);
+size_t		get_symbols(char *line, size_t start, t_list **listline);
+size_t		get_parenthesis_listline(char *line, size_t start, t_list **list, \
+char **env);
+size_t		get_listline(char *line, size_t start, t_list **listline, \
+char **env);
+// error_parenthesis.c
+int			closed_parenthesis(char *line);
+int			empty_parenthesis(char *line);
+int			symbols_parenthesis(char *line);
+int			open_parenthesis(char *line, size_t i);
+int			close_parenthesis(char *line, size_t i);
 // free_listline.c
 void		free_listline(t_listline *listline);
 void		free_pipeline(t_pipeline *pipeline);
@@ -102,6 +120,11 @@ void		free_cmdline(t_cmdline *cmdline);
 // parser_pipeline.c
 t_pipeline	*parser_pipeline(char *line, char **env);
 size_t		pipeline_loop(char *line, size_t i, t_list **pipeline, char **env);
+size_t		get_pipe(char *line, size_t start, t_list **listline);
+size_t		get_parenthesis_pipeline(char *line, size_t start, t_list **list, \
+char **env);
+size_t		get_pipeline(char *line, size_t start, t_list **listline, \
+char **env);
 // ----------------------------------------------------------------------------
 // parser_cmdline.c
 t_cmdline	*parser_cmdline(char *line, char **env);

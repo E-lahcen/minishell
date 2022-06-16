@@ -6,7 +6,7 @@
 /*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/30 11:41:46 by zwina             #+#    #+#             */
-/*   Updated: 2022/06/09 15:14:47 by zwina            ###   ########.fr       */
+/*   Updated: 2022/06/14 07:28:43 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,44 +26,42 @@ t_listline	*parser(char *line, char **env)
 		free(line);
 		return (NULL);
 	}
-	listline = parser_listline(line, env);
-	if (error_unexpected(listline, line))
+	listline = parser_listline(ft_strdup(line), env);
+	if (error_unexpected_listline(listline))
 	{
+		errors(NULL, ERR_UNEX, 0);
 		free_listline(listline);
 		free(line);
 		return (NULL);
 	}
-	set_pipestats(listline);
 	free(line);
 	return (listline);
 }
 
-void	set_pipestats(t_listline *listline)
+size_t	skip_parenthesis(char *line, size_t i)
 {
-	t_list	*lsttmp;
+	size_t	count;
 
-	lsttmp = listline->pipelines;
-	while (lsttmp && lsttmp->next)
+	count = 1;
+	i++;
+	while (count)
 	{
-		if (get_pipestat(lsttmp->content) == POR)
-			((t_pipeline *)lsttmp->next->content)->pipestat = POR;
-		else if (get_pipestat(lsttmp->content) == PAND)
-			((t_pipeline *)lsttmp->next->content)->pipestat = PAND;
-		else
-			((t_pipeline *)lsttmp->content)->pipestat = 0;
-		lsttmp = lsttmp->next;
+		if (line[i] == '(')
+			count++;
+		else if (line[i] == ')')
+			count--;
+		if (count)
+			i++;
 	}
+	return (i);
 }
 
-char	get_pipestat(t_pipeline *pipeline)
+size_t	skip_quotes(char *line, size_t i)
 {
-	t_list	*symbol;
+	char	q;
 
-	symbol = ft_lstlast(((t_cmdline *) \
-			ft_lstlast(pipeline->cmdlines)->content)->words[1]);
-	if (symbol->stat == S_OR)
-		return (POR);
-	else if (symbol->stat == S_AND)
-		return (PAND);
-	return (0);
+	q = line[i];
+	while (line[i] != q)
+		i++;
+	return (i);
 }

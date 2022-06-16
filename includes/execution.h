@@ -6,7 +6,7 @@
 /*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/04 10:22:48 by zwina             #+#    #+#             */
-/*   Updated: 2022/06/09 11:40:49 by zwina            ###   ########.fr       */
+/*   Updated: 2022/06/11 11:36:17 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@
 # define CMD_NO_FILE_OR_DIR "No such file or directory"
 
 // Pipestats
-# define PAND (char)1
-# define POR (char)2
+# define PAND (char)16
+# define POR (char)32
 
 // executor.c
 void	executor(t_listline *listline);

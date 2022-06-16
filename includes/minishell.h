@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/19 14:36:50 by zwina             #+#    #+#             */
-/*   Updated: 2022/06/09 15:17:09 by zwina            ###   ########.fr       */
+/*   Updated: 2022/06/15 13:29:11 by lelhlami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,17 @@
 extern int	g_exit;
 
 // PRINTING
-void	print_listline(t_listline *listline);
-void	print_pipeline(t_pipeline *pipeline);
-void	print_cmdline(t_cmdline *cmdline);
-void	print_list(t_list *words);
+void	print_listline(t_listline *listline, size_t tabs);
+void	print_pipeline(t_pipeline *pipeline, size_t tabs);
+void	print_cmdline(t_cmdline *cmdline, size_t tabs);
+void	print_list(t_list *words, size_t tabs);
+void	print_tabs(size_t tabs);
 
 // ERRORS
 void	errors(char *str, char *status, char quit);
+
+// SIGNALS
+void	sighandler(void);
+void	ctrl_d_func(void);
 
 #endif

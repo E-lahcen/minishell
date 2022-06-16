@@ -6,7 +6,7 @@
 /*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/01 14:55:11 by zwina             #+#    #+#             */
-/*   Updated: 2022/06/08 12:59:39 by zwina            ###   ########.fr       */
+/*   Updated: 2022/06/12 13:14:03 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,7 @@ void	set_stats(t_list *reds)
 
 	while (reds)
 	{
-		if (!ft_strncmp(reds->content, "||", 3))
-			last_stat = set_stat_symbol(reds, S_OR);
-		else if (!ft_strncmp(reds->content, "&&", 3))
-			last_stat = set_stat_symbol(reds, S_AND);
-		else if (!ft_strncmp(reds->content, "|", 2))
-			last_stat = set_stat_symbol(reds, S_PIPE);
-		else if (!ft_strncmp(reds->content, "<<", 3))
+		if (!ft_strncmp(reds->content, "<<", 3))
 			last_stat = set_stat_symbol(reds, S_HEREDOC);
 		else if (!ft_strncmp(reds->content, "<", 2))
 			last_stat = set_stat_symbol(reds, S_INPUT);

@@ -6,7 +6,7 @@
 /*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 11:22:54 by zwina             #+#    #+#             */
-/*   Updated: 2022/06/09 11:23:11 by zwina            ###   ########.fr       */
+/*   Updated: 2022/06/12 13:22:39 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,12 @@ void	free_listline(t_listline *listline)
 	lst = listline->pipelines;
 	while (lst)
 	{
-		free_pipeline(lst->content);
+		if (lst->stat == S_AND || lst->stat == S_OR)
+			free(lst->content);
+		else if (lst->stat == LISTLINE)
+			free_listline(lst->content);
+		else if (lst->stat == PIPELINE)
+			free_pipeline(lst->content);
 		tmp = lst;
 		lst = lst->next;
 		free(tmp);
@@ -40,7 +45,12 @@ void	free_pipeline(t_pipeline *pipeline)
 	lst = pipeline->cmdlines;
 	while (lst)
 	{
-		free_cmdline(lst->content);
+		if (lst->stat == S_PIPE)
+			free(lst->content);
+		else if (lst->stat == LISTLINE)
+			free_listline(lst->content);
+		else if (lst->stat == CMDLINE)
+			free_cmdline(lst->content);
 		tmp = lst;
 		lst = lst->next;
 		free(tmp);
