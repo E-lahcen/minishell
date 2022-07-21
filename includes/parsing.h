@@ -6,7 +6,7 @@
 /*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/30 11:37:49 by zwina             #+#    #+#             */
-/*   Updated: 2022/06/14 07:46:38 by zwina            ###   ########.fr       */
+/*   Updated: 2022/07/19 13:19:05 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 // Errors
 # define ERR_QUOTES "unclosed quotes are not supported"
-# define ERR_AMBG "ambiguous redirect"
 # define ERR_UNEX "syntax error near unexpected token"
 # define ERR_INCP "incomplete symbol"
 # define ERR_PARTH_C "unclosed parenthesis"
@@ -23,6 +22,7 @@
 # define ERR_PARTH_S "syntax error parenthesis"
 
 // Stats
+# define ASTRISK (unsigned short)128
 # define QU (unsigned short)96
 # define SQU (unsigned short)64
 # define DQU (unsigned short)32
@@ -73,87 +73,85 @@ typedef struct s_pipeline
 
 typedef struct s_cmdline
 {
+	t_list	*node;
 	t_list	**words;
-	char	*cmd_path;
-	char	**cmd_args;
 	char	redirections;
-	int		output;
-	int		append;
-	int		input;
-	int		heredoc;
-	char	**env;
+	size_t	n_heredoc;
+	int		o_a_i_h[4];
 }			t_cmdline;
 
+typedef struct S_cmd_infos
+{
+	char	*cmd_path;
+	char	**cmd_args;
+}			t_cmd_infos;
+
 // ----------------------------------------------------------------------------
-// parser.c
-t_listline	*parser(char *line, char **env);
-size_t		skip_parenthesis(char *line, size_t i);
-size_t		skip_quotes(char *line, size_t i);
+// parser_shelline.c
+t_listline	*parser_shelline(char *line);
+int			errors_before_parsing(char *line);
+int			errors_after_parsing(t_listline *shelline);
 // error_parsing.c
 int			error_quotes(char *line);
-int			error_parenthesis(char *line);
 int			error_incomplete(char *line);
-int			error_unexpected_listline(t_listline *listline);
-int			error_unexpected_pipeline(t_pipeline *pipeline);
-int			error_unexpected_cmdline(t_cmdline *cmdline);
-// ----------------------------------------------------------------------------
-// ----------------------------------------------------------------------------
-// parser_listline.c
-t_listline	*parser_listline(char *line, char **env);
-size_t		listline_loop(char *line, size_t i, t_list **pipeline, char **env);
-size_t		get_symbols(char *line, size_t start, t_list **listline);
-size_t		get_parenthesis_listline(char *line, size_t start, t_list **list, \
-char **env);
-size_t		get_listline(char *line, size_t start, t_list **listline, \
-char **env);
-// error_parenthesis.c
+int			error_parenthesis(char *line);
 int			closed_parenthesis(char *line);
 int			empty_parenthesis(char *line);
-int			symbols_parenthesis(char *line);
-int			open_parenthesis(char *line, size_t i);
-int			close_parenthesis(char *line, size_t i);
+// error_unexpected.c
+t_list		*error_unexpected_listline(t_listline *listline);
+t_list		*error_unexpected_pipeline(t_pipeline *pipeline);
+t_list		*error_unexpected_cmdline(t_cmdline *cmdline);
+t_list		*error_unexpected_reds(t_cmdline *cmdline);
+t_list		*get_unexpected_node(t_list *node);
+// parser_listline.c
+t_listline	*parser_listline(char *line);
+size_t		listline_loop(char *line, size_t i, t_list **pipeline);
+size_t		get_symbols(char *line, size_t start, t_list **listline);
+size_t		get_pipeline(char *line, size_t start, t_list **listline);
+size_t		skip_parenthesis(char *line, size_t i);
+size_t		skip_quotes(char *line, size_t i);
 // free_listline.c
 void		free_listline(t_listline *listline);
 void		free_pipeline(t_pipeline *pipeline);
 void		free_cmdline(t_cmdline *cmdline);
-// ----------------------------------------------------------------------------
 // parser_pipeline.c
-t_pipeline	*parser_pipeline(char *line, char **env);
-size_t		pipeline_loop(char *line, size_t i, t_list **pipeline, char **env);
+t_pipeline	*parser_pipeline(char *line);
+size_t		pipeline_loop(char *line, size_t i, t_list **pipeline);
 size_t		get_pipe(char *line, size_t start, t_list **listline);
-size_t		get_parenthesis_pipeline(char *line, size_t start, t_list **list, \
-char **env);
-size_t		get_pipeline(char *line, size_t start, t_list **listline, \
-char **env);
+size_t		get_cmdline(char *line, size_t start, t_list **listline);
 // ----------------------------------------------------------------------------
 // parser_cmdline.c
-t_cmdline	*parser_cmdline(char *line, char **env);
-void		free_all(t_cmdline *cmdline, t_list **words, char *line);
+t_cmdline	*parser_cmdline(char *line);
+void		parser_cmdline_without_parth(char *line, t_cmdline *cmdline);
+void		parser_cmdline_with_parth(char *line, t_cmdline *cmdline);
+int			is_one_cmd(char *line, size_t start, size_t end);
+char		*remove_parenthesis(char *line);
 // parser_word.c
 t_list		**parser_word(char *line);
-size_t		get_redirection(char *line, size_t start, t_list **reds);
-size_t		get_arg(char *line, size_t start, t_list **args);
+size_t		get_redirection(char *line, size_t start, t_list **reds, \
+	t_list **wrds);
+size_t		get_arg(char *line, size_t start, t_list **args, \
+	t_list **wrds);
 size_t		set_q_d(char *line, size_t i, char *q_d);
-// ----------------------------------------------------------------------------
 // expand_args.c
-t_list		*expand_args(t_list *args, char **env);
-void		expand_args_loop(t_list *args, char **env);
-t_list		*parser_arg(t_list *arg, char **env);
+t_list		*expand_args(t_list *args);
+void		expand_args_loop(t_list *args);
+t_list		*parser_arg(t_list *arg);
 size_t		get_elems(char *content, size_t i, t_list **elems);
 void		reset_stat(t_list *elems);
 // expand_astrisk.c
-void		expand_astrisk(t_list *args);
+t_list		*expand_astrisk(t_list *args);
 void		expand_astrisk_loop(t_list *args);
 t_list		*parser_astrisk(void);
 int			is_astrisk(t_list *node);
 // expand_dollars.c
-t_list		*expand_dollars(t_list *elems, char **env);
-void		expand_dollars_loop(t_list *elems, char **env);
-t_list		*parser_dollar(t_list *node, char **env);
+t_list		*expand_dollars(t_list *elems);
+void		expand_dollars_loop(t_list *elems);
+t_list		*parser_dollar(t_list *node);
 size_t		get_node(char *str, size_t start, t_list **minielems, char pos);
 // expand_quotes.c
-t_list		*expand_quotes(t_list *elems, char **env);
-t_list		*parser_double_quote(t_list *node, char **env);
+t_list		*expand_quotes(t_list *elems);
+t_list		*parser_double_quote(t_list *node);
 size_t		get_minielems(char *content, size_t i, t_list **minielems);
 // get_elements.c
 size_t		get_quote(char *str, size_t start, t_list **elem, uint16_t stat);
@@ -170,26 +168,25 @@ int			set_redirections(t_list *reds);
 int			set_rds(t_list *red, char *token, size_t len);
 void		set_rd(t_list *red, int start, char rd_type);
 char		*get_rd_token(char *str, size_t *len);
-// set_heredoc.c
-int			set_heredoc(t_cmdline *cmdline);
+// set_heredocs.c
+void		set_heredocs_listline(t_listline *listline);
+void		set_heredocs_pipeline(t_pipeline *pipeline);
+void		set_heredocs_cmdline(t_cmdline *cmdline);
+// fill_heredoc.c
+int			fill_heredoc(t_list *node);
+void		filling(t_list *node, char *str, int pipe_fd);
 char		*get_limiter(char *limiter);
-int			fill_heredoc(char *limiter, char **env, char stat);
-void		expand_dollars_heredoc(char **str, char **env);
+void		expand_dollars_heredoc(char **str);
 t_list		*parser_dollar_heredoc(char *str);
-// set_files.c
-int			set_files(t_cmdline **cmdline, t_list *reds);
-t_list		*parser_file(t_list *red, char **env);
-int			open_file(t_cmdline **cmdline, t_list *red);
-int			open_out_file(t_cmdline **cmdline, t_list *red);
-int			open_in_file(t_cmdline **cmdline, t_list *red);
 // expanding_relinking.c
-void		expand(t_list *node, char **env);
+void		expand(t_list *node);
 void		relink_double_quote(t_list *minielems, t_list *node);
 t_list		*relink_arg(t_list	*elems);
-// fill_cmdline.c
-void		init_cmdline(t_cmdline *cmdline, char **env);
-void		fill_cmdline(t_cmdline *cmdline);
-void		fill_cmd_args(t_cmdline *cmdline, t_list *args);
-void		fill_cmd_path(t_cmdline *cmdline);
+// cmdline_utils.c
+void		init_cmdline(t_cmdline *cmdline);
+void		fill_cmd_args(t_cmd_infos *cmd_infos, t_list *args);
+void		fill_cmd_path(t_cmd_infos *cmd_infos);
+size_t		set_parenthesis_limits(char *line, size_t *start, size_t *end);
+int			move_start_end(size_t j, size_t *start, size_t *end);
 // ----------------------------------------------------------------------------
 #endif

@@ -6,7 +6,7 @@
 /*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/01 14:55:11 by zwina             #+#    #+#             */
-/*   Updated: 2022/06/12 13:14:03 by zwina            ###   ########.fr       */
+/*   Updated: 2022/07/19 12:04:15 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ uint16_t	set_stat_arg(t_list *red, uint16_t last_stat)
 {
 	uint16_t	stat;
 
-	stat = last_stat;
+	stat = 0;
 	if (last_stat == S_HEREDOC)
 		stat = RD_HEREDOC;
 	else if (last_stat == S_INPUT)

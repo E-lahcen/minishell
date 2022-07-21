@@ -1,43 +1,48 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   set_heredoc.c                                      :+:      :+:    :+:   */
+/*   fill_heredoc.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 09:43:22 by zwina             #+#    #+#             */
-/*   Updated: 2022/06/09 09:00:39 by zwina            ###   ########.fr       */
+/*   Updated: 2022/07/19 14:14:25 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int	set_heredoc(t_cmdline *cmdline)
+int	fill_heredoc(t_list *node)
 {
-	t_list	*reds;
-	size_t	n;
-	int		error;
+	int		pipe_fd[2];
+	char	*str;
+	char	*limiter;
+	size_t	size;
 
-	reds = cmdline->words[1];
-	n = 0;
-	error = 0;
-	while (reds && reds->next)
+	if (g_global.heredoc_ctrlc == 1)
+		return (-1337);
+	pipe(pipe_fd);
+	limiter = get_limiter(node->content);
+	size = ft_strlen(limiter) + 1;
+	str = readline("\e[38;5;208m> \e[0m");
+	while (str && ft_strncmp(limiter, str, size))
 	{
-		if ((reds->stat & SYMBOL) && (reds->next->stat & SYMBOL))
-		{
-			errors(reds->next->content, ERR_UNEX, 0);
-			return (1);
-		}
-		else if ((reds->next->stat & RD_HEREDOC))
-		{
-			if (cmdline->heredoc != -1337)
-				close(cmdline->heredoc);
-			cmdline->heredoc = fill_heredoc(\
-			get_limiter(reds->next->content), cmdline->env, reds->next->stat);
-		}
-		reds = reds->next;
+		filling(node, ft_strjoin(str, "\n"), pipe_fd[1]);
+		free(str);
+		str = readline("\e[38;5;208m> \e[0m");
 	}
-	return (error);
+	free(str);
+	free(limiter);
+	close(pipe_fd[1]);
+	return (pipe_fd[0]);
+}
+
+void	filling(t_list *node, char *str, int pipe_fd)
+{
+	if ((node->stat & QU) == 0)
+		expand_dollars_heredoc(&str);
+	write(pipe_fd, str, ft_strlen(str));
+	free(str);
 }
 
 char	*get_limiter(char *limiter)
@@ -69,30 +74,7 @@ char	*get_limiter(char *limiter)
 	return (new_limiter);
 }
 
-int	fill_heredoc(char *limiter, char **env, char stat)
-{
-	int		pipe_fd[2];
-	size_t	size;
-	char	*str;
-
-	pipe(pipe_fd);
-	close(pipe_fd[1]);
-	size = ft_strlen(limiter) + 1;
-	str = readline("\e[38;5;208m> \e[0m");
-	while (str && ft_strncmp(limiter, str, size))
-	{
-		if ((stat & QU) == 0)
-			expand_dollars_heredoc(&str, env);
-		write(pipe_fd[1], str, ft_strlen(str));
-		free(str);
-		str = readline("\e[38;5;208m> \e[0m");
-	}
-	free(str);
-	free(limiter);
-	return (pipe_fd[0]);
-}
-
-void	expand_dollars_heredoc(char **str, char **env)
+void	expand_dollars_heredoc(char **str)
 {
 	t_list	*hold;
 	t_list	*node;
@@ -103,7 +85,7 @@ void	expand_dollars_heredoc(char **str, char **env)
 	while (lsttmp)
 	{
 		if (lsttmp->stat & DR)
-			expand(lsttmp, env);
+			expand(lsttmp);
 		lsttmp = lsttmp->next;
 	}
 	node = ft_lstnew(*str, 0);

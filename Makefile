@@ -3,33 +3,62 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+         #
+#    By: zwina <zwina@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/10 12:37:52 by zwina             #+#    #+#              #
-#    Updated: 2022/06/15 12:33:28 by lelhlami         ###   ########.fr        #
+#    Updated: 2022/06/25 00:06:46 by zwina            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
+ANSI_RESET			:= \\033[0m
+ANSI_BOLD			:= \\033[2m
+ANSI_BOLD_RESET		:= \\033[22m
+ANSI_ULINE			:= \\033[4m
+ANSI_ULINE_RESET	:= \\033[24m
+ANSI_ITALIC			:= \\033[3m
+ANSI_ITALIC_RESET	:= \\033[23m
+ANSI_RED		:= \\033[38;5;125m
+ANSI_LRED		:= \\033[38;5;196m
+ANSI_WHITE		:= \\033[38;5;15m
+ANSI_YELLOW		:= \\033[38;5;3m
+ANSI_GREEN		:= \\033[38;5;2m
+ANSI_ORANGE		:= \\033[38;5;208m
+ANSI_LORANGE	:= \\033[38;5;215m
+ANSI_GOLD		:= \\033[38;5;214m
+ANSI_BLUE		:= \\033[38;5;4m
+ANSI_PURPLE		:= \\033[38;5;129m
+ANSI_CYAN		:= \\033[38;5;44m
+
 DEBUG		:= -fsanitize=address -g
 CCWI		:= gcc -Wall -Wextra -Werror -Iincludes
-BREWFGI		:= -I ~/Downloads/homebrew/opt/readline/include
-BREWFGL		:= -L ~/Downloads/homebrew/opt/readline/lib
-EXFGS		:= -lreadline $(BREWFGL)
+RDINC		:= -I ~/Downloads/homebrew/opt/readline/include
+RDLIB		:= -L ~/Downloads/homebrew/opt/readline/lib -lreadline
 NAME		:= minishell
 # directories
 SRCSDIR		:= srcs
 OBJSDIR		:= objs
+BUILTSDIR	:= builtins
 EXECDIR		:= execution
 PARSDIR		:= parsing
 PARCMDDIR	:= parser_cmdline
-PARPIPDIR	:= parser_pipeline
-PARLISDIR	:= parser_listline
 # libf
 LIBFTDIR	:= ./libs/Libft
 LIBFT		:= $(LIBFTDIR)/libft.a
 # sources
-CEXEC		:=		executor.c \
-					paths.c
+CBUILTS		:=		cd.c \
+					echo.c \
+					env.c \
+					exit.c \
+					export.c \
+					pwd.c \
+					unset.c
+CEXEC		:=		executor_shelline.c \
+					executor_listline.c \
+					executor_pipeline.c \
+					executor_cmdline.c \
+					paths.c \
+					set_files.c \
+					$(foreach F,$(CBUILTS),$(BUILTSDIR)/$(F))
 CPARCMD		:=			parser_cmdline.c \
 						parser_word.c \
 						expand_args.c \
@@ -39,57 +68,92 @@ CPARCMD		:=			parser_cmdline.c \
 						expand_quotes.c \
 						expanding_relinking.c \
 						set_stats.c \
-						set_heredoc.c \
-						fill_cmdline.c
-CPARPIP		:=			parser_pipeline.c
-CPARLIS		:=			parser_listline.c \
-						free_listline.c
-CPARS		:=		parser.c \
-					error_pre_parsing.c \
-					error_parenthesis.c \
+						set_heredocs.c \
+						fill_heredoc.c \
+						cmdline_utils.c
+CPARS		:=		parser_shelline.c \
+					error_parsing.c \
 					error_unexpected.c \
-					$(foreach F,$(CPARCMD),$(PARCMDDIR)/$(F)) \
-					$(foreach F,$(CPARPIP),$(PARPIPDIR)/$(F)) \
-					$(foreach F,$(CPARLIS),$(PARLISDIR)/$(F))
+					parser_listline.c \
+					free_listline.c \
+					parser_pipeline.c \
+					$(foreach F,$(CPARCMD),$(PARCMDDIR)/$(F))
 CFILES		:=	minishell.c \
 				signals.c \
-				PRINTING.c \
 				errors.c \
-				$(foreach F,$(CEXEC),$(EXECDIR)/$(F)) \
-				$(foreach F,$(CPARS),$(PARSDIR)/$(F))
+				$(foreach F,$(CPARS),$(PARSDIR)/$(F)) \
+				$(foreach F,$(CEXEC),$(EXECDIR)/$(F))
 SRCS		:= $(foreach F,$(CFILES),$(SRCSDIR)/$(F))
 # objects
 OBJS		:= $(patsubst $(SRCSDIR)/%.c,$(OBJSDIR)/%.o,$(SRCS))
 
 all : $(NAME)
 
+bonus : all
+
 debug : CCWI += $(DEBUG)
 debug : all
 
-$(NAME) : $(LIBFT) $(OBJSDIR) $(OBJS) 
-	$(CCWI) $(EXFGS) $(OBJS) $(LIBFT) -o $(NAME)
+$(NAME) : $(LIBFT) $(OBJSDIR) $(OBJS)
+	@$(CCWI) $(RDLIB) $(OBJS) $(LIBFT) -o $(NAME)
+	@printf "$(ANSI_GREEN)"
+	@printf "███╗░░░███╗██╗███╗░░██╗██╗░██████╗██╗░░██╗███████╗██╗░░░░░██╗░░░░░\n"
+	@printf "████╗░████║██║████╗░██║██║██╔════╝██║░░██║██╔════╝██║░░░░░██║░░░░░\n"
+	@printf "██╔████╔██║██║██╔██╗██║██║╚█████╗░███████║█████╗░░██║░░░░░██║░░░░░\n"
+	@printf "██║╚██╔╝██║██║██║╚████║██║░╚═══██╗██╔══██║██╔══╝░░██║░░░░░██║░░░░░\n"
+	@printf "██║░╚═╝░██║██║██║░╚███║██║██████╔╝██║░░██║███████╗███████╗███████╗\n"
+	@printf "╚═╝░░░░░╚═╝╚═╝╚═╝░░╚══╝╚═╝╚═════╝░╚═╝░░╚═╝╚══════╝╚══════╝╚══════╝\n"
+	@printf "$(ANSI_RESET)\\033[38;5;10m"
+	@printf "▀█▀ █▀▀ 　 ▒█▀▀█ █▀▀ █▀▀█ █▀▀▄ █░░█\n"
+	@printf "▒█░ ▀▀█ 　 ▒█▄▄▀ █▀▀ █▄▄█ █░░█ █▄▄█\n"
+	@printf "▄█▄ ▀▀▀ 　 ▒█░▒█ ▀▀▀ ▀░░▀ ▀▀▀░ ▄▄▄█\n"
+	@printf "$(ANSI_RESET)"
 
 $(OBJS) : $(OBJSDIR)/%.o : $(SRCSDIR)/%.c
-	$(CCWI) -c $< -o $@ $(BREWFGI)
+	@$(CCWI) $(RDINC) -c $< -o $@
+	@printf "$(ANSI_PURPLE)$(ANSI_ITALIC)"
+	@printf "$@ "
+	@printf "$(ANSI_GREEN)"
+	@printf "[DONE]\n"
+	@printf "$(ANSI_RESET)"
 
 $(OBJSDIR) :
 	@mkdir $(OBJSDIR)
 	@mkdir $(OBJSDIR)/$(EXECDIR)
+	@mkdir $(OBJSDIR)/$(EXECDIR)/$(BUILTSDIR)
 	@mkdir $(OBJSDIR)/$(PARSDIR)
 	@mkdir $(OBJSDIR)/$(PARSDIR)/$(PARCMDDIR)
-	@mkdir $(OBJSDIR)/$(PARSDIR)/$(PARPIPDIR)
-	@mkdir $(OBJSDIR)/$(PARSDIR)/$(PARLISDIR)
 
 $(LIBFT) :
+	@printf "$(ANSI_ORANGE)"
+	@printf "|-------------------|\n"
+	@printf "$(ANSI_LORANGE)"
+	@printf "  Creating LIBFT ...\n"
 	@make all bonus -C $(LIBFTDIR)
+	@printf "       [DONE].\n"
+	@printf "$(ANSI_ORANGE)"
+	@printf "|-------------------|\n"
+	@printf "$(ANSI_RESET)"
 
 clean :
 	@make clean -C $(LIBFTDIR)
-	rm -rf $(OBJSDIR)
+	@rm -rf $(OBJSDIR)
+	@printf "$(ANSI_LRED)"
+	@printf "|-------------------|\n"
+	@printf "  Cleaning OBJS ...\n"
+	@printf "       [DONE].\n"
+	@printf "|-------------------|\n"
+	@printf "$(ANSI_RESET)"
 
 fclean : clean
 	@make fclean -C $(LIBFTDIR)
-	rm -rf $(NAME)
+	@rm -rf $(NAME)
+	@printf "$(ANSI_RED)"
+	@printf "|----------------------|\n"
+	@printf "  REMOVE MINISHELL ...\n"
+	@printf "         [DONE].\n"
+	@printf "|----------------------|\n"
+	@printf "$(ANSI_RESET)"
 
 re : fclean all
 

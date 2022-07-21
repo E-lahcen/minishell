@@ -1,0 +1,6 @@
+.DS_Store
+.vscode
+*.o
+libft.a
+minishell
+draw.tldr

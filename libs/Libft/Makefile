@@ -13,6 +13,9 @@ ANSI_ORANGE	:= \\033[38;5;208m
 ANSI_GOLD	:= \\033[38;5;214m
 ANSI_BLUE	:= \\033[38;5;4m
 ANSI_CYAN	:= \\033[38;5;44m
+ANSI_ERASE	:= \\033[2K
+ANSI_MOVE	:= \\033[0G
+
 CCW			:= cc -Wall -Wextra -Werror -I../../includes
 LIB			:= libft.a
 SRCS		:= ft_atoi.c \
@@ -67,28 +70,21 @@ OBJS_BONUS	:= $(SRCS_BONUS:%.c=bin/%.o)
 all : $(LIB)
 
 $(LIB) : bin $(OBJS)
-	@printf "$(ANSI_CYAN)$(ANSI_ULINE)libft.a is created with the mandatory part.\n$(ANSI_RESET)"
 
 bonus : bin $(OBJS_BONUS)
-	@printf "$(ANSI_CYAN)$(ANSI_ULINE)libft.a is created with the bonus part.\n$(ANSI_RESET)"
 
 $(OBJS) $(OBJS_BONUS) :
 	@$(CCW) -c $(@:bin/%.o=%.c) -o $@
 	@ar -rcs $(LIB) $@
-	@printf "$(ANSI_ITALIC)%s$(ANSI_RESET)\t\t$(ANSI_GREEN)[Done]\n$(ANSI_RESET)" \
-		"$(@:bin/%.o=%.c)"
 
 bin :
 	@mkdir bin
-	@printf "$(ANSI_CYAN)bin directory is created.\n$(ANSI_RESET)"
 
 clean :
 	@rm -rf bin
-	@printf "$(ANSI_RED)$(ANSI_ITALIC)object files and bin directory are removed.\n$(ANSI_RESET)"
 
 fclean :
 	@rm -f $(LIB)
-	@printf "$(ANSI_RED)$(ANSI_ULINE)libft.a is removed.\n$(ANSI_RESET)"
 
 re : fclean all bonus
 

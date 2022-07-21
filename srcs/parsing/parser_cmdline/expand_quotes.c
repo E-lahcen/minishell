@@ -6,13 +6,13 @@
 /*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/01 10:15:45 by zwina             #+#    #+#             */
-/*   Updated: 2022/06/05 18:02:49 by zwina            ###   ########.fr       */
+/*   Updated: 2022/06/23 12:50:58 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-t_list	*expand_quotes(t_list *elems, char **env)
+t_list	*expand_quotes(t_list *elems)
 {
 	t_list	*hold;
 
@@ -20,13 +20,13 @@ t_list	*expand_quotes(t_list *elems, char **env)
 	while (elems)
 	{
 		if (elems->stat == DQU)
-			elems = parser_double_quote(elems, env);
+			elems = parser_double_quote(elems);
 		elems = elems->next;
 	}
 	return (hold);
 }
 
-t_list	*parser_double_quote(t_list *node, char **env)
+t_list	*parser_double_quote(t_list *node)
 {
 	t_list	*minielems;
 	t_list	*lsttmp;
@@ -40,7 +40,7 @@ t_list	*parser_double_quote(t_list *node, char **env)
 	while (lsttmp)
 	{
 		if (lsttmp->stat == DR)
-			expand(lsttmp, env);
+			expand(lsttmp);
 		lsttmp = lsttmp->next;
 	}
 	relink_double_quote(minielems, node);

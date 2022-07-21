@@ -6,19 +6,19 @@
 /*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/22 13:09:59 by lelhlami          #+#    #+#             */
-/*   Updated: 2022/06/06 12:03:24 by zwina            ###   ########.fr       */
+/*   Updated: 2022/06/23 14:41:06 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-char	**get_paths(char **env)
+char	**get_paths(void)
 {
 	char	**paths;
 	char	*tmp;
 	size_t	i;
 
-	tmp = env_searching(ft_strdup("PATH="), env);
+	tmp = getmyenv("PATH");
 	paths = ft_split(tmp, ':');
 	i = 0;
 	while (paths[i])
@@ -31,29 +31,34 @@ char	**get_paths(char **env)
 	return (paths);
 }
 
-char	*env_searching(char *str, char **env)
+char	*getmyenv(char *name)
 {
-	int		i;
-	size_t	bytes;
+	t_list	*env;
+	char	**key_value;
 
-	i = 0;
-	bytes = ft_strlen(str);
-	while (env[i] && ft_strncmp(str, env[i], bytes))
-		i++;
-	free(str);
-	if (!env[i])
-		return (NULL);
-	return (ft_strchr(env[i], '=') + 1);
+	env = g_global.myenv;
+	while (env)
+	{
+		key_value = env->content;
+		if (!ft_strncmp(name, key_value[0], ft_strlen(name) + 1))
+			return (key_value[1]);
+		env = env->next;
+	}
+	return (NULL);
 }
 
-void	free_paths(char **paths)
+void	free_paths(void *ptr)
 {
+	char	**paths;
 	size_t	i;
 
+	paths = (char **)ptr;
 	i = 0;
 	if (!paths)
 		return ;
 	while (paths[i])
+	{
 		free(paths[i++]);
+	}
 	free(paths);
 }

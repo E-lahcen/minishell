@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/19 14:36:50 by zwina             #+#    #+#             */
-/*   Updated: 2022/06/15 13:29:11 by lelhlami         ###   ########.fr       */
+/*   Updated: 2022/07/19 14:47:29 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,20 +33,31 @@
 # include "parsing.h"
 # include "execution.h"
 
-extern int	g_exit;
+// Signal types
+# define HANDLER 1
+# define IGNORE 2
+# define DEFAULT 3
 
-// PRINTING
-void	print_listline(t_listline *listline, size_t tabs);
-void	print_pipeline(t_pipeline *pipeline, size_t tabs);
-void	print_cmdline(t_cmdline *cmdline, size_t tabs);
-void	print_list(t_list *words, size_t tabs);
-void	print_tabs(size_t tabs);
+typedef struct s_global
+{
+	int		heredoc_newl;
+	int		exit;
+	int		heredoc_ctrlc;
+	char	**env;
+	t_list	*myenv;
+}		t_global;
+
+t_global	g_global;
+
+t_list	*setup_my_env(char **env);
+void	minishell_loop(void);
 
 // ERRORS
 void	errors(char *str, char *status, char quit);
 
 // SIGNALS
-void	sighandler(void);
-void	ctrl_d_func(void);
+void	ctrl_c_heredoc(int sig);
+void	ctrl_c(int sig);
+void	sig_handler(char type);
 
 #endif

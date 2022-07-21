@@ -6,13 +6,13 @@
 /*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 13:10:44 by zwina             #+#    #+#             */
-/*   Updated: 2022/06/09 14:51:42 by zwina            ###   ########.fr       */
+/*   Updated: 2022/07/19 12:46:44 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-void	expand_astrisk(t_list *args)
+t_list	*expand_astrisk(t_list *args)
 {
 	t_list	*lsttmp;
 	t_list	*lsttmp2;
@@ -36,6 +36,7 @@ void	expand_astrisk(t_list *args)
 			break ;
 	}
 	expand_astrisk_loop(args);
+	return (args);
 }
 
 void	expand_astrisk_loop(t_list *args)
@@ -77,7 +78,8 @@ t_list	*parser_astrisk(void)
 	while (pdent)
 	{
 		if (pdent->d_name[0] != '.')
-			ft_lstadd_back(&files, ft_lstnew(ft_strdup(pdent->d_name), 0));
+			ft_lstadd_back(&files, ft_lstnew(ft_strdup(pdent->d_name), \
+				ASTRISK));
 		pdent = readdir(pd);
 	}
 	closedir(pd);

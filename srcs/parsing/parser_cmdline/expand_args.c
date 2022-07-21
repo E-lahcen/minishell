@@ -6,15 +6,13 @@
 /*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/31 13:29:29 by zwina             #+#    #+#             */
-/*   Updated: 2022/06/08 13:27:31 by zwina            ###   ########.fr       */
+/*   Updated: 2022/06/23 12:49:49 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-// echo $USER$HOME -> you have to fix it
-
-t_list	*expand_args(t_list *args, char **env)
+t_list	*expand_args(t_list *args)
 {
 	t_list	*lsttmp;
 	t_list	*lsttmp2;
@@ -26,7 +24,7 @@ t_list	*expand_args(t_list *args, char **env)
 		{
 			lsttmp = args->next;
 			lsttmp2 = args;
-			args = parser_arg(args, env);
+			args = parser_arg(args);
 			ft_lstdelone(lsttmp2, free);
 			if (args)
 			{
@@ -38,11 +36,11 @@ t_list	*expand_args(t_list *args, char **env)
 		else
 			break ;
 	}
-	expand_args_loop(args, env);
+	expand_args_loop(args);
 	return (args);
 }
 
-void	expand_args_loop(t_list *args, char **env)
+void	expand_args_loop(t_list *args)
 {
 	t_list	*lsttmp;
 	t_list	*lsttmp2;
@@ -54,7 +52,7 @@ void	expand_args_loop(t_list *args, char **env)
 		{
 			lsttmp = args->next->next;
 			lsttmp2 = args->next;
-			args->next = parser_arg(args->next, env);
+			args->next = parser_arg(args->next);
 			ft_lstdelone(lsttmp2, free);
 			if (args->next)
 				(ft_lstlast(args->next))->next = lsttmp;
@@ -66,7 +64,7 @@ void	expand_args_loop(t_list *args, char **env)
 	}
 }
 
-t_list	*parser_arg(t_list *arg, char **env)
+t_list	*parser_arg(t_list *arg)
 {
 	t_list	*elems;
 	size_t	i;
@@ -76,8 +74,8 @@ t_list	*parser_arg(t_list *arg, char **env)
 	while (((char *)arg->content)[i] != '\0' && \
 	((char *)arg->content)[i] != '&' && ((char *)arg->content)[i] != '|')
 		i = get_elems(arg->content, i, &elems);
-	elems = expand_dollars(elems, env);
-	elems = expand_quotes(elems, env);
+	elems = expand_dollars(elems);
+	elems = expand_quotes(elems);
 	reset_stat(relink_arg(elems));
 	return (elems);
 }
