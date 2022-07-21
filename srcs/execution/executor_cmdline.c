@@ -3,24 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   executor_cmdline.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/19 14:28:23 by zwina             #+#    #+#             */
-/*   Updated: 2022/07/20 14:18:20 by lelhlami         ###   ########.fr       */
+/*   Updated: 2022/07/20 20:54:24 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-void executor_cmdline(t_cmdline *cmdline, char built)
+void	executor_cmdline(t_cmdline *cmdline, char built)
 {
-	int rt;
+	int	rt;
 
 	rt = set_files(cmdline);
 	if (rt && built)
 	{
 		g_global.exit = errno;
-		return;
+		return ;
 	}
 	else if (rt && !built)
 		exit(errno);
@@ -38,9 +38,9 @@ void executor_cmdline(t_cmdline *cmdline, char built)
 		execute(cmdline);
 }
 
-void execute(t_cmdline *cmdline)
+void	execute(t_cmdline *cmdline)
 {
-	t_cmd_infos *cmd;
+	t_cmd_infos	*cmd;
 
 	cmd = cmdline->node->content;
 	if (cmd->cmd_args[0] == NULL)
@@ -52,81 +52,52 @@ void execute(t_cmdline *cmdline)
 		errno = 127;
 		errors(cmd->cmd_path, ERR_CMDNOTFOUND, 1);
 	}
-	else if (execve(cmd->cmd_path, cmd->cmd_args, convert_my_env(g_global.myenv)) == -1)
+	else if (execve(cmd->cmd_path, cmd->cmd_args, convert_myenv()) == -1)
 		execve_errors(cmd->cmd_path);
 }
 
-char **convert_my_env(t_list *my_env)
-{
-	char **new_env;
-	char **key_value;
-	char *tmp;
-	char *str;
-	size_t i;
-
-	new_env = (char **)malloc(sizeof(char *) * (ft_lstsize(my_env) + 1));
-	if (!new_env)
-		return (NULL);
-	i = 0;
-	while (my_env)
-	{
-		key_value = my_env->content;
-		if (key_value[1])
-		{
-			tmp = ft_strjoin(key_value[0], "=");
-			str = ft_strjoin(tmp, key_value[1]);
-			free(tmp);
-			new_env[i] = str;
-			i++;
-		}
-		my_env = my_env->next;
-	}
-	new_env[i] = NULL;
-	return (new_env);
-}
-
-int is_builtins(char *cmd)
+int	is_builtins(char *cmd)
 {
 	if (!cmd)
 		return (0);
-	if (!ft_strncmp(cmd, "echo", 5) ||
-		!ft_strncmp(cmd, "cd", 3) ||
-		!ft_strncmp(cmd, "pwd", 4) ||
-		!ft_strncmp(cmd, "export", 7) ||
-		!ft_strncmp(cmd, "unset", 6) ||
-		!ft_strncmp(cmd, "env", 4) ||
+	if (!ft_strncmp(cmd, "echo", 5) || \
+		!ft_strncmp(cmd, "cd", 3) || \
+		!ft_strncmp(cmd, "pwd", 4) || \
+		!ft_strncmp(cmd, "export", 7) || \
+		!ft_strncmp(cmd, "unset", 6) || \
+		!ft_strncmp(cmd, "env", 4) || \
 		!ft_strncmp(cmd, "exit", 5))
 		return (1);
 	return (0);
 }
 
-void execute_builtins(t_cmdline *cmdline)
+void	execute_builtins(t_cmdline *cmdline)
 {
 	errno = 0;
-	if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0],
-					"echo", 5))
+	if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0], \
+		"echo", 5))
 		ft_echo(cmdline);
-	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0],
-						 "cd", 3))
+	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0], \
+		"cd", 3))
 		ft_cd(cmdline);
-	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0],
-						 "pwd", 4))
+	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0], \
+		"pwd", 4))
 		ft_pwd(cmdline);
-	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0],
-						 "export", 7))
+	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0], \
+		"export", 7))
 		ft_export(cmdline);
-	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0],
-						 "unset", 6))
+	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0], \
+		"unset", 6))
 		ft_unset(cmdline);
-	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0],
-						 "env", 4))
+	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0], \
+		"env", 4))
 		ft_env(cmdline);
-	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0],
-						 "exit", 5))
+	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0], \
+		"exit", 5))
 		ft_exit(cmdline);
 }
 
-void execve_errors(char *cmd_path)
+void	execve_errors(char *cmd_path)
 {
 	if (!access(cmd_path, X_OK))
 	{

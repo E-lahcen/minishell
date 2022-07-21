@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   parser_pipeline.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 18:35:02 by zwina             #+#    #+#             */
-/*   Updated: 2022/07/20 10:11:44 by lelhlami         ###   ########.fr       */
+/*   Updated: 2022/07/19 18:52:23 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-t_pipeline *parser_pipeline(char *line)
+t_pipeline	*parser_pipeline(char *line)
 {
-	t_pipeline *pipeline;
-	size_t i;
+	t_pipeline	*pipeline;
+	size_t		i;
 
 	pipeline = (t_pipeline *)malloc(sizeof(t_pipeline));
 	pipeline->cmdlines = NULL;
@@ -32,7 +32,7 @@ t_pipeline *parser_pipeline(char *line)
 	return (pipeline);
 }
 
-size_t pipeline_loop(char *line, size_t i, t_list **pipeline)
+size_t	pipeline_loop(char *line, size_t i, t_list **pipeline)
 {
 	if (line[i] == '|')
 		i = get_pipe(line, i, pipeline);
@@ -41,15 +41,15 @@ size_t pipeline_loop(char *line, size_t i, t_list **pipeline)
 	return (i);
 }
 
-size_t get_pipe(char *line, size_t start, t_list **listline)
+size_t	get_pipe(char *line, size_t start, t_list **listline)
 {
 	ft_lstadd_back(listline, ft_lstnew(ft_substr(line, start, 1), S_PIPE));
 	return (start + 1);
 }
 
-size_t get_cmdline(char *line, size_t start, t_list **listline)
+size_t	get_cmdline(char *line, size_t start, t_list **listline)
 {
-	size_t i;
+	size_t	i;
 
 	i = start;
 	while (line[i] && line[i] != '|')
@@ -60,15 +60,15 @@ size_t get_cmdline(char *line, size_t start, t_list **listline)
 			i = skip_parenthesis(line, i);
 		i++;
 	}
-	ft_lstadd_back(listline,
-				   ft_lstnew(parser_cmdline(ft_substr(line, start, i - start)),
-							 CMDLINE));
+	ft_lstadd_back(listline, \
+	ft_lstnew(parser_cmdline(ft_substr(line, start, i - start)), \
+	CMDLINE));
 	return (i);
 }
 
-size_t skip_quotes(char *line, size_t i)
+size_t	skip_quotes(char *line, size_t i)
 {
-	char q;
+	char	q;
 
 	q = line[i++];
 	while (line[i] != q)

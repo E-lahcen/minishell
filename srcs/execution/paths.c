@@ -6,7 +6,7 @@
 /*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/22 13:09:59 by lelhlami          #+#    #+#             */
-/*   Updated: 2022/06/23 14:41:06 by zwina            ###   ########.fr       */
+/*   Updated: 2022/07/20 20:58:20 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,4 +61,31 @@ void	free_paths(void *ptr)
 		free(paths[i++]);
 	}
 	free(paths);
+}
+
+char	**convert_myenv(void)
+{
+	int		i;
+	int		size;
+	char	*tmp;
+	char	**newenv;
+	t_list	*env;
+
+	env = g_global.myenv;
+	size = ft_lstsize(env) + 1;
+	newenv = (char **)malloc(sizeof(char *) * size);
+	i = 0;
+	while (env)
+	{
+		if (((char **)env->content)[1])
+		{
+			tmp = ft_strjoin(((char **)env->content)[0], "=");
+			newenv[i] = ft_strjoin(tmp, ((char **)env->content)[1]);
+			free(tmp);
+			i++;
+		}
+		env = env->next;
+	}
+	newenv[i] = NULL;
+	return (newenv);
 }

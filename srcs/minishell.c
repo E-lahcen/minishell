@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 12:57:59 by zwina             #+#    #+#             */
-/*   Updated: 2022/07/20 11:13:17 by lelhlami         ###   ########.fr       */
+/*   Updated: 2022/07/21 09:49:00 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int main(int ac, char **av, char **env)
+int	main(int ac, char **av, char **env)
 {
 	(void)av;
 	if (ac != 1)
@@ -30,12 +30,12 @@ int main(int ac, char **av, char **env)
 	return (0);
 }
 
-t_list *setup_my_env(char **env)
+t_list	*setup_my_env(char **env)
 {
-	size_t i;
-	size_t equal_index;
-	t_list *my_env;
-	char **key_value;
+	size_t	i;
+	size_t	equal_index;
+	t_list	*my_env;
+	char	**key_value;
 
 	i = 0;
 	my_env = NULL;
@@ -54,10 +54,10 @@ t_list *setup_my_env(char **env)
 	return (my_env);
 }
 
-void minishell_loop(void)
+void	minishell_loop(void)
 {
-	t_listline *shelline;
-	char *line;
+	t_listline	*shelline;
+	char		*line;
 
 	while (1)
 	{
@@ -68,13 +68,16 @@ void minishell_loop(void)
 			exit(0);
 		}
 		if (!line[0])
-			continue;
+		{
+			free(line);
+			continue ;
+		}
 		add_history(line);
 		g_global.heredoc_ctrlc = 0;
 		g_global.heredoc_newl = 0;
 		shelline = parser_shelline(line);
 		if (!shelline)
-			continue;
+			continue ;
 		executor_shelline(shelline);
 		free_listline(shelline);
 	}

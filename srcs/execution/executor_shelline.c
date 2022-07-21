@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   executor_shelline.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/22 12:59:53 by lelhlami          #+#    #+#             */
-/*   Updated: 2022/07/20 12:53:50 by lelhlami         ###   ########.fr       */
+/*   Updated: 2022/07/20 12:15:31 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int check_symbol(t_list *node)
+int	check_symbol(t_list *node)
 {
 	if (node->stat == S_AND && g_global.exit)
 		return (1);
@@ -21,10 +21,10 @@ int check_symbol(t_list *node)
 	return (0);
 }
 
-void executor_shelline(t_listline *shelline)
+void	executor_shelline(t_listline *shelline)
 {
-	t_list *lsttmp;
-	pid_t pid;
+	t_list	*lsttmp;
+	pid_t	pid;
 
 	lsttmp = shelline->pipelines;
 	while (lsttmp)

@@ -3,23 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   executor_pipeline.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/19 14:29:53 by zwina             #+#    #+#             */
-/*   Updated: 2022/07/20 14:18:03 by lelhlami         ###   ########.fr       */
+/*   Updated: 2022/06/25 16:53:26 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-pid_t executor_pipeline(t_pipeline *pipeline)
+pid_t	executor_pipeline(t_pipeline *pipeline)
 {
-	pid_t pid;
-	int fd[2];
-	int default_in;
+	pid_t		pid;
+	int			fd[2];
+	int			default_in;
 
 	pid = 0;
-	if (ft_lstsize(pipeline->cmdlines) == 1 && ((t_cmdline *)pipeline->cmdlines->content)->node->stat == CMDLINE && is_builtins(((t_cmd_infos *)((t_cmdline *)pipeline->cmdlines->content)->node->content)->cmd_args[0]))
+	if (ft_lstsize(pipeline->cmdlines) == 1 && ((t_cmdline *)pipeline->\
+cmdlines->content)->node->stat == CMDLINE && is_builtins(((t_cmd_infos *) \
+	((t_cmdline *)pipeline->cmdlines->content)->node->content)->cmd_args[0]))
 	{
 		fd[0] = dup(0);
 		fd[1] = dup(1);
@@ -39,16 +41,16 @@ pid_t executor_pipeline(t_pipeline *pipeline)
 	return (pid);
 }
 
-pid_t executor_pipeline_loop(t_list *cmdlines, int *pipe_fd)
+pid_t	executor_pipeline_loop(t_list *cmdlines, int *pipe_fd)
 {
-	pid_t pid;
+	pid_t	pid;
 
 	while (cmdlines)
 	{
 		if (cmdlines->stat == S_PIPE)
 		{
 			cmdlines = cmdlines->next;
-			continue;
+			continue ;
 		}
 		pipe(pipe_fd);
 		pid = fork();
@@ -66,7 +68,7 @@ pid_t executor_pipeline_loop(t_list *cmdlines, int *pipe_fd)
 	return (pid);
 }
 
-void dup_close_pipe(int *pipe_fd, int standard)
+void	dup_close_pipe(int *pipe_fd, int standard)
 {
 	dup2(pipe_fd[standard], standard);
 	close(pipe_fd[0]);

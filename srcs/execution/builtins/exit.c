@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/22 08:13:44 by zwina             #+#    #+#             */
-/*   Updated: 2022/07/20 11:10:07 by lelhlami         ###   ########.fr       */
+/*   Updated: 2022/06/23 14:08:01 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-void ft_exit(t_cmdline *cmdline)
+void	ft_exit(t_cmdline *cmdline)
 {
-	char *first_arg;
-	int exit_status;
+	char	*first_arg;
+	int		exit_status;
 
 	first_arg = ((t_cmd_infos *)cmdline->node->content)->cmd_args[1];
 	if (!first_arg)
@@ -41,16 +41,16 @@ void ft_exit(t_cmdline *cmdline)
 	}
 }
 
-void exiting(int status)
+void	exiting(int status)
 {
 	ft_putendl_fd("exit", 1);
 	g_global.exit = status;
 	exit(status);
 }
 
-int ft_isnumeric(char *str)
+int	ft_isnumeric(char *str)
 {
-	size_t i;
+	size_t	i;
 
 	i = 0;
 	while (str[i])
@@ -58,7 +58,7 @@ int ft_isnumeric(char *str)
 		if (i == 0 && (str[i] == '-' || str[i] == '+'))
 		{
 			i++;
-			continue;
+			continue ;
 		}
 		if (!ft_isdigit(str[i]))
 			return (0);
@@ -67,9 +67,9 @@ int ft_isnumeric(char *str)
 	return (1);
 }
 
-int get_sign(char **first_arg)
+int	get_sign(char **first_arg)
 {
-	int sign;
+	int	sign;
 
 	sign = 1;
 	if ((*first_arg)[0] == '-' || (*first_arg)[0] == '+')
