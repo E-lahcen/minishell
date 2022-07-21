@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/22 08:14:51 by zwina             #+#    #+#             */
-/*   Updated: 2022/06/24 15:54:14 by zwina            ###   ########.fr       */
+/*   Updated: 2022/07/21 13:18:48 by lelhlami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ size_t	skip_minus_n(char **args)
 	i = 0;
 	while (args[i])
 	{
-		if (!is_minus_n(args[i]))
+		if (!args[i][0] || !is_minus_n(args[i]))
 			break ;
 		i++;
 	}

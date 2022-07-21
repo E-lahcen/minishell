@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmdline_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/04 13:39:52 by zwina             #+#    #+#             */
-/*   Updated: 2022/07/19 13:20:10 by zwina            ###   ########.fr       */
+/*   Updated: 2022/07/21 13:22:35 by lelhlami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ void	init_cmdline(t_cmdline *cmdline)
 
 void	fill_cmd_args(t_cmd_infos *cmd_infos, t_list *args)
 {
-	int		len;
-	int		i;
+	int	len;
+	int	i;
 
 	len = ft_lstsize(args) + 1;
 	cmd_infos->cmd_args = (char **)malloc(sizeof(char *) * len);
@@ -46,7 +46,7 @@ void	fill_cmd_path(t_cmd_infos *cmd_infos)
 	size_t	i;
 
 	if (!cmd_infos->cmd_args[0] || !cmd_infos->cmd_args[0][0] || \
-		ft_strchr(cmd_infos->cmd_args[0], '/'))
+	ft_strchr(cmd_infos->cmd_args[0], '/') || cmd_infos->cmd_args[0][0] == '.')
 	{
 		cmd_infos->cmd_path = ft_strdup(cmd_infos->cmd_args[0]);
 		return ;
