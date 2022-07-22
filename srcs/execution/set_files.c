@@ -3,24 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   set_files.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 18:54:14 by zwina             #+#    #+#             */
-/*   Updated: 2022/07/19 12:45:55 by zwina            ###   ########.fr       */
+/*   Updated: 2022/07/22 11:10:47 by lelhlami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int	set_files(t_cmdline *cmdline)
+int set_files(t_cmdline *cmdline)
 {
-	t_list	*lsttmp;
-	t_list	*red;
+	t_list *lsttmp;
+	t_list *red;
 
 	lsttmp = cmdline->words[1];
 	while (lsttmp)
 	{
-		if (lsttmp->stat & RD)
+		if ((lsttmp->stat & RD) && !(lsttmp->stat & RD_HEREDOC))
 		{
 			red = parser_file(lsttmp);
 			if (red == NULL)
@@ -40,9 +40,9 @@ int	set_files(t_cmdline *cmdline)
 	return (0);
 }
 
-t_list	*parser_file(t_list *red)
+t_list *parser_file(t_list *red)
 {
-	t_list	*elems;
+	t_list *elems;
 
 	if ((red->stat & ASTRISK) && red->next && (red->next->stat & ASTRISK))
 	{
@@ -60,7 +60,7 @@ t_list	*parser_file(t_list *red)
 	return (elems);
 }
 
-int	open_file(t_cmdline *cmdline, t_list *red)
+int open_file(t_cmdline *cmdline, t_list *red)
 {
 	if (open_out_file(cmdline, red))
 		return (1);
@@ -69,13 +69,13 @@ int	open_file(t_cmdline *cmdline, t_list *red)
 	return (0);
 }
 
-int	open_out_file(t_cmdline *cmdline, t_list *red)
+int open_out_file(t_cmdline *cmdline, t_list *red)
 {
 	if (red->stat & RD_OUTPUT)
 	{
 		close(cmdline->o_a_i_h[1]);
-		cmdline->o_a_i_h[0] = open(red->content, \
-			O_WRONLY | O_TRUNC | O_CREAT, 0644);
+		cmdline->o_a_i_h[0] = open(red->content,
+								   O_WRONLY | O_TRUNC | O_CREAT, 0644);
 		if (cmdline->o_a_i_h[0] == -1)
 		{
 			errors(red->content, strerror(errno), 0);
@@ -86,8 +86,8 @@ int	open_out_file(t_cmdline *cmdline, t_list *red)
 	else if (red->stat & RD_APPEND)
 	{
 		close(cmdline->o_a_i_h[0]);
-		cmdline->o_a_i_h[1] = open(red->content, \
-			O_WRONLY | O_APPEND | O_CREAT, 0644);
+		cmdline->o_a_i_h[1] = open(red->content,
+								   O_WRONLY | O_APPEND | O_CREAT, 0644);
 		if (cmdline->o_a_i_h[1] == -1)
 		{
 			errors(red->content, strerror(errno), 0);
@@ -98,7 +98,7 @@ int	open_out_file(t_cmdline *cmdline, t_list *red)
 	return (0);
 }
 
-int	open_in_file(t_cmdline *cmdline, t_list *red)
+int open_in_file(t_cmdline *cmdline, t_list *red)
 {
 	if (red->stat & RD_INPUT)
 	{

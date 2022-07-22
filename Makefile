@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: zwina <zwina@student.42.fr>                +#+  +:+       +#+         #
+#    By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/10 12:37:52 by zwina             #+#    #+#              #
-#    Updated: 2022/06/25 00:06:46 by zwina            ###   ########.fr        #
+#    Updated: 2022/07/22 11:36:41 by lelhlami         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -81,6 +81,7 @@ CPARS		:=		parser_shelline.c \
 CFILES		:=	minishell.c \
 				signals.c \
 				errors.c \
+				PRINTING.c \
 				$(foreach F,$(CPARS),$(PARSDIR)/$(F)) \
 				$(foreach F,$(CEXEC),$(EXECDIR)/$(F))
 SRCS		:= $(foreach F,$(CFILES),$(SRCSDIR)/$(F))
