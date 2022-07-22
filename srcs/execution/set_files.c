@@ -6,7 +6,7 @@
 /*   By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 18:54:14 by zwina             #+#    #+#             */
-/*   Updated: 2022/07/22 11:10:47 by lelhlami         ###   ########.fr       */
+/*   Updated: 2022/07/22 15:20:47 by lelhlami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,7 @@ int set_files(t_cmdline *cmdline)
 		{
 			red = parser_file(lsttmp);
 			if (red == NULL)
-			{
-				ft_lstclear(&red, free);
 				return (1);
-			}
 			else if (open_file(cmdline, red))
 			{
 				ft_lstclear(&red, free);
@@ -46,7 +43,7 @@ t_list *parser_file(t_list *red)
 
 	if ((red->stat & ASTRISK) && red->next && (red->next->stat & ASTRISK))
 	{
-		errors("*", ERR_AMBG, 1);
+		errors("*", ERR_AMBG, 0);
 		return (NULL);
 	}
 	elems = parser_arg(red);
@@ -54,7 +51,8 @@ t_list *parser_file(t_list *red)
 		elems->stat = red->stat;
 	if (!elems || ft_lstsize(elems) > 1)
 	{
-		errors(red->content, ERR_AMBG, 1);
+		errors(red->content, ERR_AMBG, 0);
+		ft_lstclear(&elems, free);
 		return (NULL);
 	}
 	return (elems);

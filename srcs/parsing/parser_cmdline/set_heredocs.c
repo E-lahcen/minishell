@@ -6,7 +6,7 @@
 /*   By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 13:30:55 by zwina             #+#    #+#             */
-/*   Updated: 2022/07/22 12:08:06 by lelhlami         ###   ########.fr       */
+/*   Updated: 2022/07/22 14:24:12 by lelhlami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ void set_heredocs_cmdline(t_cmdline *cmdline)
 	if (cmdline->node->stat == LISTLINE)
 		set_heredocs_listline(cmdline->node->content);
 	wrds = cmdline->words[1];
-	print_list(wrds, 1);
 	while (wrds)
 	{
 		if ((wrds->stat & RD_HEREDOC) && cmdline->n_heredoc)
