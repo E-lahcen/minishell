@@ -6,7 +6,7 @@
 /*   By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 18:54:14 by zwina             #+#    #+#             */
-/*   Updated: 2022/07/22 15:20:47 by lelhlami         ###   ########.fr       */
+/*   Updated: 2022/07/22 15:29:44 by lelhlami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ t_list *parser_file(t_list *red)
 	if ((red->stat & ASTRISK) && red->next && (red->next->stat & ASTRISK))
 	{
 		errors("*", ERR_AMBG, 0);
+		errno = 1;
 		return (NULL);
 	}
 	elems = parser_arg(red);
@@ -53,6 +54,7 @@ t_list *parser_file(t_list *red)
 	{
 		errors(red->content, ERR_AMBG, 0);
 		ft_lstclear(&elems, free);
+		errno = 1;
 		return (NULL);
 	}
 	return (elems);

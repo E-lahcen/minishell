@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   error_parsing.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/25 19:18:09 by zwina             #+#    #+#             */
-/*   Updated: 2022/06/25 19:18:13 by zwina            ###   ########.fr       */
+/*   Updated: 2022/07/22 15:40:29 by lelhlami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int	error_quotes(char *line)
+int error_quotes(char *line)
 {
-	char	q;
-	size_t	i;
+	char q;
+	size_t i;
 
 	q = 0;
 	i = 0;
@@ -38,13 +38,15 @@ int	error_quotes(char *line)
 	return (0);
 }
 
-int	error_incomplete(char *line)
+int error_incomplete(char *line)
 {
-	size_t	i;
+	size_t i;
 
 	i = 0;
 	while (line[i])
 	{
+		if (line[i] == '\'' || line[i] == '\"')
+			i = skip_quotes(line, i);
 		if (line[i] == '&')
 		{
 			i++;
@@ -59,7 +61,7 @@ int	error_incomplete(char *line)
 	return (0);
 }
 
-int	error_parenthesis(char *line)
+int error_parenthesis(char *line)
 {
 	if (closed_parenthesis(line))
 	{
@@ -74,15 +76,17 @@ int	error_parenthesis(char *line)
 	return (0);
 }
 
-int	closed_parenthesis(char *line)
+int closed_parenthesis(char *line)
 {
-	size_t	i;
-	int		stat;
+	size_t i;
+	int stat;
 
 	i = 0;
 	stat = 0;
 	while (line[i])
 	{
+		if (line[i] == '\"' || line[i] == '\'')
+			i = skip_quotes(line, i);
 		if (line[i] == '(')
 			stat++;
 		else if (line[i] == ')')
@@ -96,20 +100,22 @@ int	closed_parenthesis(char *line)
 	return (0);
 }
 
-int	empty_parenthesis(char *line)
+int empty_parenthesis(char *line)
 {
-	size_t	i;
+	size_t i;
 
 	i = 0;
 	while (line[i])
 	{
+		if (line[i] == '\"' || line[i] == '\'')
+			i = skip_quotes(line, i) + 1;
 		if (line[i] == '(')
 		{
 			i++;
 			while (line[i] != ')')
 			{
 				if (line[i] != ' ')
-					break ;
+					break;
 				i++;
 			}
 			if (line[i] == ')')
