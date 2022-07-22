@@ -3,21 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   fill_heredoc.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 09:43:22 by zwina             #+#    #+#             */
-/*   Updated: 2022/07/22 12:21:17 by lelhlami         ###   ########.fr       */
+/*   Updated: 2022/07/22 16:30:25 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int fill_heredoc(t_list *node)
+int	fill_heredoc(t_list *node)
 {
-	int pipe_fd[2];
-	char *str;
-	char *limiter;
-	size_t size;
+	int		pipe_fd[2];
+	char	*str;
+	char	*limiter;
+	size_t	size;
 
 	if (g_global.heredoc_ctrlc == 1)
 		return (-1337);
@@ -38,7 +38,7 @@ int fill_heredoc(t_list *node)
 	return (pipe_fd[0]);
 }
 
-void filling(t_list *node, char *str, int pipe_fd)
+void	filling(t_list *node, char *str, int pipe_fd)
 {
 	if ((node->stat & QU) == 0)
 		expand_dollars_heredoc(&str);
@@ -46,12 +46,12 @@ void filling(t_list *node, char *str, int pipe_fd)
 	free(str);
 }
 
-char *get_limiter(char *limiter)
+char	*get_limiter(char *limiter)
 {
-	size_t i;
-	size_t j;
-	size_t len;
-	char *new_limiter;
+	size_t	i;
+	size_t	j;
+	size_t	len;
+	char	*new_limiter;
 
 	i = 0;
 	len = 0;
@@ -63,7 +63,8 @@ char *get_limiter(char *limiter)
 			len += j - i - 1;
 			i = j;
 		}
-		else if (!(limiter[i] == '$' && (limiter[i + 1] == '\'' || limiter[i + 1] == '\"')))
+		else if (!(limiter[i] == '$' && (limiter[i + 1] == '\'' || \
+				limiter[i + 1] == '\"')))
 			len++;
 		i++;
 	}
@@ -73,11 +74,11 @@ char *get_limiter(char *limiter)
 	return (new_limiter);
 }
 
-void expand_dollars_heredoc(char **str)
+void	expand_dollars_heredoc(char **str)
 {
-	t_list *hold;
-	t_list *node;
-	t_list *lsttmp;
+	t_list	*hold;
+	t_list	*node;
+	t_list	*lsttmp;
 
 	hold = parser_dollar_heredoc(*str);
 	lsttmp = hold;
@@ -93,10 +94,10 @@ void expand_dollars_heredoc(char **str)
 	free(node);
 }
 
-t_list *parser_dollar_heredoc(char *str)
+t_list	*parser_dollar_heredoc(char *str)
 {
-	t_list *lst;
-	size_t i;
+	t_list	*lst;
+	size_t	i;
 
 	lst = NULL;
 	i = 0;

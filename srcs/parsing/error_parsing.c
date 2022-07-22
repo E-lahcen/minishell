@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   error_parsing.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/25 19:18:09 by zwina             #+#    #+#             */
-/*   Updated: 2022/07/22 15:40:29 by lelhlami         ###   ########.fr       */
+/*   Updated: 2022/07/22 16:36:51 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int error_quotes(char *line)
+int	error_quotes(char *line)
 {
-	char q;
-	size_t i;
+	char	q;
+	size_t	i;
 
 	q = 0;
 	i = 0;
@@ -38,9 +38,9 @@ int error_quotes(char *line)
 	return (0);
 }
 
-int error_incomplete(char *line)
+int	error_incomplete(char *line)
 {
-	size_t i;
+	size_t	i;
 
 	i = 0;
 	while (line[i])
@@ -61,7 +61,7 @@ int error_incomplete(char *line)
 	return (0);
 }
 
-int error_parenthesis(char *line)
+int	error_parenthesis(char *line)
 {
 	if (closed_parenthesis(line))
 	{
@@ -76,10 +76,10 @@ int error_parenthesis(char *line)
 	return (0);
 }
 
-int closed_parenthesis(char *line)
+int	closed_parenthesis(char *line)
 {
-	size_t i;
-	int stat;
+	size_t	i;
+	int		stat;
 
 	i = 0;
 	stat = 0;
@@ -100,9 +100,9 @@ int closed_parenthesis(char *line)
 	return (0);
 }
 
-int empty_parenthesis(char *line)
+int	empty_parenthesis(char *line)
 {
-	size_t i;
+	size_t	i;
 
 	i = 0;
 	while (line[i])
@@ -115,7 +115,7 @@ int empty_parenthesis(char *line)
 			while (line[i] != ')')
 			{
 				if (line[i] != ' ')
-					break;
+					break ;
 				i++;
 			}
 			if (line[i] == ')')

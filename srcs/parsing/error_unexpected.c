@@ -3,26 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   error_unexpected.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/12 17:34:06 by zwina             #+#    #+#             */
-/*   Updated: 2022/07/22 12:23:59 by lelhlami         ###   ########.fr       */
+/*   Updated: 2022/07/22 16:39:43 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-t_list *error_unexpected_listline(t_listline *listline)
+t_list	*error_unexpected_listline(t_listline *listline)
 {
-	t_list *unexpected_node;
-	t_list *lsttmp;
-	size_t pattern;
+	t_list	*unexpected_node;
+	t_list	*lsttmp;
+	size_t	pattern;
 
 	lsttmp = listline->pipelines;
 	pattern = 1;
 	while (lsttmp)
 	{
-		if ((lsttmp->stat == S_AND || lsttmp->stat == S_OR) &&
+		if ((lsttmp->stat == S_AND || lsttmp->stat == S_OR) && \
 			(pattern % 2 == 1 || !lsttmp->next))
 		{
 			return (lsttmp);
@@ -36,11 +36,11 @@ t_list *error_unexpected_listline(t_listline *listline)
 	return (NULL);
 }
 
-t_list *error_unexpected_pipeline(t_pipeline *pipeline)
+t_list	*error_unexpected_pipeline(t_pipeline *pipeline)
 {
-	t_list *unexpected_node;
-	t_list *lsttmp;
-	size_t pattern;
+	t_list	*unexpected_node;
+	t_list	*lsttmp;
+	size_t	pattern;
 
 	lsttmp = pipeline->cmdlines;
 	pattern = 1;
@@ -57,9 +57,9 @@ t_list *error_unexpected_pipeline(t_pipeline *pipeline)
 	return (NULL);
 }
 
-t_list *error_unexpected_cmdline(t_cmdline *cmdline)
+t_list	*error_unexpected_cmdline(t_cmdline *cmdline)
 {
-	t_list *unexpected_node;
+	t_list	*unexpected_node;
 
 	if (cmdline->node->stat == CMDLINE)
 	{
@@ -79,17 +79,17 @@ t_list *error_unexpected_cmdline(t_cmdline *cmdline)
 	return (NULL);
 }
 
-t_list *error_unexpected_reds(t_cmdline *cmdline)
+t_list	*error_unexpected_reds(t_cmdline *cmdline)
 {
-	t_list *wrds;
+	t_list	*wrds;
 
 	wrds = cmdline->words[2];
 	while (wrds)
 	{
-		if (((wrds->stat & S_RD) && (!wrds->next || (wrds->next->stat &
-													 S_RD))) ||
-			(cmdline->node->stat == LISTLINE && !(wrds->stat & (S_RD + RD))) ||
-			(cmdline->node->stat == CMDLINE && ((char *)wrds->content)[0] == '('))
+		if (((wrds->stat & S_RD) && (!wrds->next || \
+		(wrds->next->stat & S_RD))) || (cmdline->node->stat == LISTLINE && \
+		!(wrds->stat & (S_RD + RD))) || (cmdline->node->stat == CMDLINE && \
+		((char *)wrds->content)[0] == '('))
 		{
 			if (((char *)wrds->content)[0] == '(')
 			{
@@ -108,7 +108,7 @@ t_list *error_unexpected_reds(t_cmdline *cmdline)
 	return (NULL);
 }
 
-t_list *get_unexpected_node(t_list *node)
+t_list	*get_unexpected_node(t_list *node)
 {
 	if (node->stat == LISTLINE)
 		return (error_unexpected_listline(node->content));

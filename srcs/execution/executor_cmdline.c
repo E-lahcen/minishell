@@ -3,24 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   executor_cmdline.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/19 14:28:23 by zwina             #+#    #+#             */
-/*   Updated: 2022/07/22 09:43:57 by lelhlami         ###   ########.fr       */
+/*   Updated: 2022/07/22 16:16:38 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-void executor_cmdline(t_cmdline *cmdline, char built, char is_forked)
+void	executor_cmdline(t_cmdline *cmdline, char built, char is_forked)
 {
-	int rt;
+	int	rt;
 
 	rt = set_files(cmdline);
 	if (rt && built)
 	{
 		g_global.exit = errno;
-		return;
+		return ;
 	}
 	else if (rt && !built)
 		exit(errno);
@@ -38,9 +38,9 @@ void executor_cmdline(t_cmdline *cmdline, char built, char is_forked)
 		execute(cmdline, is_forked);
 }
 
-void execute(t_cmdline *cmdline, char is_forked)
+void	execute(t_cmdline *cmdline, char is_forked)
 {
-	t_cmd_infos *cmd;
+	t_cmd_infos	*cmd;
 
 	cmd = cmdline->node->content;
 	if (cmd->cmd_args[0] == NULL)
@@ -56,48 +56,48 @@ void execute(t_cmdline *cmdline, char is_forked)
 		execve_errors(cmd->cmd_path);
 }
 
-int is_builtins(char *cmd)
+int	is_builtins(char *cmd)
 {
 	if (!cmd)
 		return (0);
-	if (!ft_strncmp(cmd, "echo", 5) ||
-		!ft_strncmp(cmd, "cd", 3) ||
-		!ft_strncmp(cmd, "pwd", 4) ||
-		!ft_strncmp(cmd, "export", 7) ||
-		!ft_strncmp(cmd, "unset", 6) ||
-		!ft_strncmp(cmd, "env", 4) ||
+	if (!ft_strncmp(cmd, "echo", 5) || \
+		!ft_strncmp(cmd, "cd", 3) || \
+		!ft_strncmp(cmd, "pwd", 4) || \
+		!ft_strncmp(cmd, "export", 7) || \
+		!ft_strncmp(cmd, "unset", 6) || \
+		!ft_strncmp(cmd, "env", 4) || \
 		!ft_strncmp(cmd, "exit", 5))
 		return (1);
 	return (0);
 }
 
-void execute_builtins(t_cmdline *cmdline, char is_forked)
+void	execute_builtins(t_cmdline *cmdline, char is_forked)
 {
 	errno = 0;
-	if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0],
-					"echo", 5))
+	if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0], \
+				"echo", 5))
 		ft_echo(cmdline);
-	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0],
-						 "cd", 3))
+	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0], \
+				"cd", 3))
 		ft_cd(cmdline);
-	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0],
-						 "pwd", 4))
+	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0], \
+				"pwd", 4))
 		ft_pwd(cmdline);
-	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0],
-						 "export", 7))
+	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0], \
+				"export", 7))
 		ft_export(cmdline);
-	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0],
-						 "unset", 6))
+	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0], \
+				"unset", 6))
 		ft_unset(cmdline);
-	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0],
-						 "env", 4))
+	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0], \
+				"env", 4))
 		ft_env(cmdline);
-	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0],
-						 "exit", 5))
+	else if (!ft_strncmp(((t_cmd_infos *)cmdline->node->content)->cmd_args[0], \
+				"exit", 5))
 		ft_exit(cmdline, is_forked);
 }
 
-void execve_errors(char *cmd_path)
+void	execve_errors(char *cmd_path)
 {
 	if (!access(cmd_path, X_OK))
 	{

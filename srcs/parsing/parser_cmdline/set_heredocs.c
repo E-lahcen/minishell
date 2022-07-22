@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   set_heredocs.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 13:30:55 by zwina             #+#    #+#             */
-/*   Updated: 2022/07/22 14:24:12 by lelhlami         ###   ########.fr       */
+/*   Updated: 2022/07/22 16:28:29 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-void set_heredocs_listline(t_listline *listline)
+void	set_heredocs_listline(t_listline *listline)
 {
-	t_list *lsttmp;
+	t_list	*lsttmp;
 
 	lsttmp = listline->pipelines;
 	while (lsttmp)
@@ -25,9 +25,9 @@ void set_heredocs_listline(t_listline *listline)
 	}
 }
 
-void set_heredocs_pipeline(t_pipeline *pipeline)
+void	set_heredocs_pipeline(t_pipeline *pipeline)
 {
-	t_list *lsttmp;
+	t_list	*lsttmp;
 
 	lsttmp = pipeline->cmdlines;
 	while (lsttmp)
@@ -38,9 +38,9 @@ void set_heredocs_pipeline(t_pipeline *pipeline)
 	}
 }
 
-void set_heredocs_cmdline(t_cmdline *cmdline)
+void	set_heredocs_cmdline(t_cmdline *cmdline)
 {
-	t_list *wrds;
+	t_list	*wrds;
 
 	if (cmdline->node->stat == LISTLINE)
 		set_heredocs_listline(cmdline->node->content);
@@ -56,11 +56,11 @@ void set_heredocs_cmdline(t_cmdline *cmdline)
 	}
 }
 
-void set_limiter(char *limiter, char *new_limiter)
+void	set_limiter(char *limiter, char *new_limiter)
 {
-	size_t i;
-	size_t len;
-	char q;
+	size_t	i;
+	size_t	len;
+	char	q;
 
 	i = 0;
 	len = 0;
@@ -72,7 +72,8 @@ void set_limiter(char *limiter, char *new_limiter)
 			while (limiter[i] != q)
 				new_limiter[len++] = limiter[i++];
 		}
-		else if (!(limiter[i] == '$' && (limiter[i + 1] == '\'' || limiter[i + 1] == '\"')))
+		else if (!(limiter[i] == '$' && (limiter[i + 1] == '\'' || \
+				limiter[i + 1] == '\"')))
 			new_limiter[len++] = limiter[i];
 		i++;
 	}

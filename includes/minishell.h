@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelhlami <lelhlami@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zwina <zwina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/19 14:36:50 by zwina             #+#    #+#             */
-/*   Updated: 2022/07/22 11:36:19 by lelhlami         ###   ########.fr       */
+/*   Updated: 2022/07/22 16:43:46 by zwina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@
 # include "libft.h"
 # include "parsing.h"
 # include "execution.h"
-# include "PRINTING.h"
 
 // Signal types
 # define HANDLER 1
